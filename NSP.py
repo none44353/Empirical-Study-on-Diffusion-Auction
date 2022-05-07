@@ -1,6 +1,6 @@
 import networkx as nx
 import unittest
-from mechanismBase import DiffusionAuction, getOptimal
+from mechanismBase import DiffusionAuction
 import itertools
 
 class NSP(DiffusionAuction):
@@ -32,7 +32,7 @@ class TestNSP(unittest.TestCase):
         nx.set_node_attributes(G, dict(enumerate(bids)), "bid")
 
         result = mechanism(G, seller)
-        
+
         self.assertTrue(result.feasible())
         self.assertEqual(result.revenue(), 5)
         self.assertEqual(result.socialWelfare(), 7)

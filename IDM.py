@@ -1,5 +1,5 @@
 import networkx as nx
-from mechanismBase import DiffusionAuction, getOptimal
+from mechanismBase import DiffusionAuction
 import unittest
 
 class IDM(DiffusionAuction):
@@ -77,7 +77,7 @@ class TestIDM(unittest.TestCase):
         nx.set_node_attributes(G, dict(enumerate(bid)), "bid")
 
         result = mechanism(G, seller)
-        
+
         self.assertTrue(result.feasible())
         self.assertEqual(result.revenue(), 13)
         self.assertEqual(result.socialWelfare(), 17)
