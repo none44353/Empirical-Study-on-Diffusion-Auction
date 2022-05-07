@@ -14,9 +14,10 @@ class STM(DiffusionAuction):
                 Gamma.append(i)
         return Gamma
 
-    def __call__(self, G, seller):
+    def __call__(self, G, seller, Gamma=None):
         bid = G.nodes.data("bid")
-        Gamma = STM.getTopoGamma(G, seller)
+        if Gamma == None:
+            Gamma = STM.getTopoGamma(G, seller)
 
         idom = nx.immediate_dominators(G, seller)
         reachableNodes = list(filter(lambda i: nx.has_path(G, seller, i), G.nodes))
