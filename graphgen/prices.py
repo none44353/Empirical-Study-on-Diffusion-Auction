@@ -1,5 +1,5 @@
 import networkx as nx
-from genBase import GraphGen
+from .genBase import GraphGen
 
 class Price_s(GraphGen):
     def __init__(self, p: float):
