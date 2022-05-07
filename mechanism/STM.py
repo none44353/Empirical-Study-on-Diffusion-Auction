@@ -62,10 +62,10 @@ class TestSTM(unittest.TestCase):
         seller = 0
         result = stm(G, seller)
 
-        self.assertTrue(result.feasible())
-        self.assertEqual(result.revenue(), 11)
-        self.assertEqual(result.socialWelfare(), 13)
-        self.assertAlmostEqual(result.efficiencyRatio(), 0.7647058823529411)
+        self.assertTrue(result.feasible)
+        self.assertEqual(result.revenue, 11)
+        self.assertEqual(result.socialWelfare, 13)
+        self.assertAlmostEqual(result.efficiencyRatio, 0.7647058823529411)
 
 if __name__ == "__main__":
     unittest.main()

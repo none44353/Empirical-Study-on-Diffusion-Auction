@@ -65,10 +65,10 @@ class TestSCM(unittest.TestCase):
         seller = 0
         result = scm(G, seller)
 
-        self.assertTrue(result.feasible())
-        self.assertEqual(result.revenue(), 17)
-        self.assertEqual(result.socialWelfare(), 19)
-        self.assertAlmostEqual(result.efficiencyRatio(), 1.0)
+        self.assertTrue(result.feasible)
+        self.assertEqual(result.revenue, 17)
+        self.assertEqual(result.socialWelfare, 19)
+        self.assertAlmostEqual(result.efficiencyRatio, 1.0)
 
 if __name__ == "__main__":
     unittest.main()

@@ -33,10 +33,10 @@ class TestNSP(unittest.TestCase):
 
         result = mechanism(G, seller)
 
-        self.assertTrue(result.feasible())
-        self.assertEqual(result.revenue(), 5)
-        self.assertEqual(result.socialWelfare(), 7)
-        self.assertAlmostEqual(result.efficiencyRatio(), 0.4117647058823529)
+        self.assertTrue(result.feasible)
+        self.assertEqual(result.revenue, 5)
+        self.assertEqual(result.socialWelfare, 7)
+        self.assertAlmostEqual(result.efficiencyRatio, 0.4117647058823529)
 
 
 if __name__ == "__main__":

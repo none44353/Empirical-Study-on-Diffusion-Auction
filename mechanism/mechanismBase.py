@@ -11,19 +11,23 @@ class DiffusionAuction(ABC):
             self.monetaryTransfer = monetaryTransfer
             self.G = G
         
+        @property
         def feasible(self) -> bool:
             return self.winner in self.G.nodes \
                 and sum(self.monetaryTransfer.values()) == 0 \
                 and all(self.monetaryTransfer[x] == 0 for x in self.G.nodes - nx.descendants(self.G, self.seller) - set([self.seller]))
 
+        @property
         def revenue(self) -> float:
             return self.monetaryTransfer[self.seller]
 
+        @property
         def socialWelfare(self) -> float:
             return self.G.nodes[self.winner]["bid"]
         
+        @property
         def efficiencyRatio(self) -> float:
-            return self.socialWelfare() / getOptimal(self.G, self.seller)
+            return self.socialWelfare / getOptimal(self.G, self.seller)
 
     @abstractmethod
     def __call__(self, G: nx.DiGraph, seller: Any) -> MechanismResult:

@@ -78,10 +78,10 @@ class TestIDM(unittest.TestCase):
 
         result = mechanism(G, seller)
 
-        self.assertTrue(result.feasible())
-        self.assertEqual(result.revenue(), 13)
-        self.assertEqual(result.socialWelfare(), 17)
-        self.assertAlmostEqual(result.efficiencyRatio(), 1.0)
+        self.assertTrue(result.feasible)
+        self.assertEqual(result.revenue, 13)
+        self.assertEqual(result.socialWelfare, 17)
+        self.assertAlmostEqual(result.efficiencyRatio, 1.0)
     
     def testIDM_Li2017Fig2(self):
         mechanism = IDM()
@@ -96,7 +96,7 @@ class TestIDM(unittest.TestCase):
         nx.set_node_attributes(G, bid, "bid")
         seller = 's'
         result = mechanism(G, seller)
-        self.assertTrue(result.feasible())
+        self.assertTrue(result.feasible)
         self.assertEqual(result.winner, 'I')
         self.assertEqual(result.monetaryTransfer['I'], -11)
         self.assertEqual(result.monetaryTransfer['C'], 1)
