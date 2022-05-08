@@ -17,6 +17,9 @@ from graphgen.prices import Price_s
 from graphgen.staticFile import StaticFile
 from multiprocessing import Pool
 
+# mode = 'FAST'
+mode = 'STANDARD'
+
 TEST_TIMES = 10
 
 test_mechanisms = {
@@ -43,7 +46,13 @@ test_graphs = {
     'Schweimer22 Vegan': (StaticFile('data/static_graph/Vegan.gpickle'), 11015),
 }
 
+if mode == 'FAST':
+    test_graphs = {
+        x: y for x, y in test_graphs.items() if y[1] < 500
+    }
+
 pregenerated_graphs = {name: [] for name in test_graphs}
+pregenerated_seller = {name: [] for name in test_graphs}
 
 test_distributions = {
     'uniform': stats.uniform(loc=0, scale=1),
@@ -54,7 +63,6 @@ test_distributions = {
 
 pregenerated_bids = {name: [] for name in test_distributions}
 
-
 def test(mechanism: DiffusionAuction, 
         gname: str, 
         dname: str,
@@ -62,9 +70,7 @@ def test(mechanism: DiffusionAuction,
     graph = pregenerated_graphs[gname][i].copy()
     nodes = list(graph.nodes)
     bids = dict(zip(nodes, pregenerated_bids[dname]))
-    degree_threshold = graph.number_of_edges() / len(graph.nodes)
-    deg = dict(graph.degree())
-    seller = random.choice([x for x in nodes if deg[x] >= degree_threshold])
+    seller = pregenerated_seller[gname][i]
     bids[seller] = 1e-8
     nx.set_node_attributes(graph, bids, 'bid')
     return mechanism(graph, seller)
@@ -79,6 +85,9 @@ def main():
             graph = graphgen(n)
             max_n = max(max_n, len(graph.nodes))
             pregenerated_graphs[gname].append(graph)
+            degree_threshold = graph.number_of_edges() / len(graph.nodes)
+            deg = dict(graph.degree())
+            pregenerated_seller[gname].append(random.choice([x for x in graph.nodes if deg[x] >= degree_threshold]))
     
     for dname in test_distributions:
         print(f'Pregenerating bid {dname}')
