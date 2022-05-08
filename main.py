@@ -46,14 +46,6 @@ test_graphs = {
     'Schweimer22 Vegan': (StaticFile('data/static_graph/Vegan.gpickle'), 11015),
 }
 
-if mode == 'FAST':
-    test_graphs = {
-        x: y for x, y in test_graphs.items() if y[1] < 500
-    }
-
-pregenerated_graphs = {name: [] for name in test_graphs}
-pregenerated_seller = {name: [] for name in test_graphs}
-
 test_distributions = {
     'uniform': stats.uniform(loc=0, scale=1),
     'powerlaw': stats.zipf(a=1.1),
@@ -61,6 +53,13 @@ test_distributions = {
     'halfnorm': stats.halfnorm(),
 }
 
+if mode == 'FAST':
+    test_graphs = {
+        x: y for x, y in test_graphs.items() if y[1] < 500
+    }
+
+pregenerated_graphs = {name: [] for name in test_graphs}
+pregenerated_seller = {name: [] for name in test_graphs}
 pregenerated_bids = {name: [] for name in test_distributions}
 
 def test(mechanism: DiffusionAuction, 
