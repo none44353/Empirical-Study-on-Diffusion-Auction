@@ -15,6 +15,7 @@ from graphgen.gnp import GNP
 from graphgen.prices import Price_s
 # from graphgen.Schweimer22 import Schweimer22
 from graphgen.staticFile import StaticFile
+from multiprocessing import Pool
 
 TEST_TIMES = 10
 
@@ -53,13 +54,18 @@ test_distributions = {
 
 pregenerated_bids = {name: [] for name in test_distributions}
 
-test_cases = {gname: {dname: [] for dname in test_distributions} for gname in test_graphs}
 
 def test(mechanism: DiffusionAuction, 
         gname: str, 
         dname: str,
         i: int) -> DiffusionAuction.MechanismResult:
-    graph, seller = test_cases[gname][dname][i]
+    graph = pregenerated_graphs[gname][i].copy()
+    nodes = list(graph.nodes)
+    bids = dict(zip(nodes, pregenerated_bids[dname]))
+    degree_threshold = graph.number_of_edges() / len(graph.nodes)
+    seller = random.choice([x for x in nodes if graph.degree(x) >= degree_threshold])
+    bids[seller] = 1e-8
+    nx.set_node_attributes(graph, bids, 'bid')
     return mechanism(graph, seller)
 
 def main():
@@ -77,26 +83,11 @@ def main():
         print(f'Pregenerating bid {dname}')
         distribution = test_distributions[dname]
         pregenerated_bids[dname] = distribution.rvs(max_n)
-    
-    for gname in test_graphs:
-        for dname in test_distributions:
-            for i in range(TEST_TIMES):
-                print(f'Pregenerating test case {gname} {dname} {i}')
-                graph = pregenerated_graphs[gname][i].copy()
-                nodes = list(graph.nodes)
-                bids = dict(zip(nodes, pregenerated_bids[dname]))
-                seller = random.choice(nodes)
-                bids[seller] = 1e-8
-                nx.set_node_attributes(graph, bids, 'bid')
-                test_cases[gname][dname].append((graph, seller))
 
     for gname in test_graphs:
         for mname, mechanism in test_mechanisms.items():
             for dname in test_distributions:
-                eff_ratio = []
-                for i in range(TEST_TIMES):
-                    result = test(mechanism, gname, dname, i)
-                    eff_ratio.append(result.efficiencyRatio)
+                eff_ratio = list(map(lambda i: test(mechanism, gname, dname, i).efficiencyRatio, list(range(TEST_TIMES))))
                 print(f'{gname} {mname} {dname}: {np.mean(eff_ratio):.4f}')
 
 if __name__ == '__main__':
