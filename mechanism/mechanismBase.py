@@ -1,9 +1,10 @@
 import networkx as nx
 from abc import ABC, abstractmethod
 from typing import Any, List, Dict, Tuple
+import abstractcp as acp
 import unittest
 
-class DiffusionAuction(ABC):
+class DiffusionAuction(ABC, acp.Abstract):
     class MechanismResult:
         def __init__(self, seller: Any, winner: Any, monetaryTransfer: Dict[Any, float], G: nx.DiGraph):
             self.seller = seller
@@ -28,6 +29,8 @@ class DiffusionAuction(ABC):
         @property
         def efficiencyRatio(self) -> float:
             return self.socialWelfare / getOptimal(self.G, self.seller)
+    
+    name: str = acp.abstract_class_property(str)
 
     @abstractmethod
     def __call__(self, G: nx.DiGraph, seller: Any) -> MechanismResult:

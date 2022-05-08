@@ -1,9 +1,10 @@
 import networkx as nx
-from .IDM import IDM
-from .mechanismBase import DiffusionAuction
+import mechanismBase
+import IDM
 import unittest
 
-class STM(DiffusionAuction):
+class STM(mechanismBase.DiffusionAuction):
+    name = "STM"
 
     @staticmethod
     def getTopoGamma(G, seller):
@@ -21,8 +22,8 @@ class STM(DiffusionAuction):
 
         idom = nx.immediate_dominators(G, seller)
         reachableNodes = list(filter(lambda i: nx.has_path(G, seller, i), G.nodes))
-        p, maxAlpha = IDM.getPrice(G, seller, bid, idom, reachableNodes)
-        mxBidder, diffusionSeq = IDM.getDiffSeq(seller, reachableNodes, idom, bid)
+        p, maxAlpha = IDM.IDM.getPrice(G, seller, bid, idom, reachableNodes)
+        mxBidder, diffusionSeq = IDM.IDM.getDiffSeq(seller, reachableNodes, idom, bid)
 
         q = {}
         for ix in range(0, len(diffusionSeq)):
@@ -48,7 +49,7 @@ class STM(DiffusionAuction):
                 monetaryTransfer[i] = q[i] - p[i]
                 monetaryTransfer[seller] -= q[i] - p[i]
 
-        return DiffusionAuction.MechanismResult(seller, winner, monetaryTransfer, G)
+        return mechanismBase.DiffusionAuction.MechanismResult(seller, winner, monetaryTransfer, G)
 
 class TestSTM(unittest.TestCase):
     def testSTM_hand(self):

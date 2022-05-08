@@ -1,9 +1,11 @@
 import networkx as nx
 import unittest
-from .mechanismBase import DiffusionAuction
+import mechanismBase
 import itertools
 
-class NSP(DiffusionAuction):
+class NSP(mechanismBase.DiffusionAuction):
+    name = "NSP"
+
     def __call__(self, G, seller):
         winner, maxBid, secPrice = seller, -1, -1
         bid = G.nodes.data("bid")
@@ -17,7 +19,7 @@ class NSP(DiffusionAuction):
         monetaryTransfer = dict(zip(G.nodes, itertools.repeat(0)))
         monetaryTransfer[seller] += secPrice
         monetaryTransfer[winner] -= secPrice
-        return DiffusionAuction.MechanismResult(seller, winner, monetaryTransfer, G)
+        return mechanismBase.DiffusionAuction.MechanismResult(seller, winner, monetaryTransfer, G)
 
 class TestNSP(unittest.TestCase):
     def test_NSP(self):

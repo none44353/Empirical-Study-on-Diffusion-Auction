@@ -1,13 +1,15 @@
 from random import randint
 import networkx as nx
-from .mechanismBase import DiffusionAuction
-from .STM import STM
+import mechanismBase
+import STM
 import unittest
 
-class SCM(DiffusionAuction):
+class SCM(mechanismBase.DiffusionAuction):
+    name = "SCM"
+    
     def __init__(self):
         super().__init__()
-        self.stm = STM()
+        self.stm = STM.STM()
 
     @staticmethod
     def getSybilClusterIndex(G, seller, Gamma):
@@ -38,7 +40,7 @@ class SCM(DiffusionAuction):
         return Tree
 
     def __call__(self, G, seller):
-        Gamma = STM.getTopoGamma(G, seller)
+        Gamma = STM.STM.getTopoGamma(G, seller)
         clusterIndex = SCM.getSybilClusterIndex(G, seller, Gamma)
         clustersGraph = nx.DiGraph()
         for i, j in G.edges():

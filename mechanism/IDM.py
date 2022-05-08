@@ -1,8 +1,10 @@
 import networkx as nx
-from .mechanismBase import DiffusionAuction
+import mechanismBase
 import unittest
 
-class IDM(DiffusionAuction):
+class IDM(mechanismBase.DiffusionAuction):
+    name = "IDM"
+    
     @staticmethod
     def getPrice(G, seller, bid, idom, H):
         # H is the set of reachable vertexes from seller
@@ -63,7 +65,7 @@ class IDM(DiffusionAuction):
             else:
                 monetaryTransfer[i] = price[diffusionSeq[ix + 1]] - price[i]
 
-        return DiffusionAuction.MechanismResult(seller, winner, monetaryTransfer, G)
+        return mechanismBase.DiffusionAuction.MechanismResult(seller, winner, monetaryTransfer, G)
 
 class TestIDM(unittest.TestCase):
     def testIDM_hand(self):
