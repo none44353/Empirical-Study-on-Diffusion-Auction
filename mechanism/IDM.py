@@ -1,5 +1,5 @@
 import networkx as nx
-from mechanismBase import DiffusionAuction
+from .mechanismBase import DiffusionAuction
 import unittest
 
 class IDM(DiffusionAuction):

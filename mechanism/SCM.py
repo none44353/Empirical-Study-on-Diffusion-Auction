@@ -1,7 +1,7 @@
 from random import randint
 import networkx as nx
-from mechanismBase import DiffusionAuction
-from STM import STM
+from .mechanismBase import DiffusionAuction
+from .STM import STM
 import unittest
 
 class SCM(DiffusionAuction):
