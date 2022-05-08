@@ -63,7 +63,8 @@ def test(mechanism: DiffusionAuction,
     nodes = list(graph.nodes)
     bids = dict(zip(nodes, pregenerated_bids[dname]))
     degree_threshold = graph.number_of_edges() / len(graph.nodes)
-    seller = random.choice([x for x in nodes if graph.degree(x) >= degree_threshold])
+    deg = dict(graph.degree())
+    seller = random.choice([x for x in nodes if deg[x] >= degree_threshold])
     bids[seller] = 1e-8
     nx.set_node_attributes(graph, bids, 'bid')
     return mechanism(graph, seller)
