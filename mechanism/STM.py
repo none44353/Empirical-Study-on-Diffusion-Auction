@@ -1,6 +1,6 @@
 import networkx as nx
-import mechanismBase
-import IDM
+import mechanism.mechanismBase as mechanismBase
+import mechanism.IDM as IDM
 import unittest
 
 class STM(mechanismBase.DiffusionAuction):

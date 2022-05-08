@@ -1,7 +1,7 @@
 from random import randint
 import networkx as nx
-import mechanismBase
-import STM
+import mechanism.mechanismBase as mechanismBase
+import mechanism.STM as STM
 import unittest
 
 class SCM(mechanismBase.DiffusionAuction):
@@ -40,17 +40,19 @@ class SCM(mechanismBase.DiffusionAuction):
         return Tree
 
     def __call__(self, G, seller):
+        reachable = nx.descendants(G, seller) | set([seller])
         Gamma = STM.STM.getTopoGamma(G, seller)
         clusterIndex = SCM.getSybilClusterIndex(G, seller, Gamma)
         clustersGraph = nx.DiGraph()
+        clustersGraph.add_node(seller)
         for i, j in G.edges():
-            if nx.has_path(G, seller, i) and clusterIndex[i] != clusterIndex[j]:
+            if i in reachable and clusterIndex[i] != clusterIndex[j]:
                 clustersGraph.add_edge(clusterIndex[i], clusterIndex[j])
         
         clustersTree = SCM.getRSPTree(clustersGraph, seller)
         subG = G.copy()
         for i, j in G.edges():
-            if nx.has_path(G, seller, i) and clusterIndex[i] != clusterIndex[j]:
+            if i in reachable and clusterIndex[i] != clusterIndex[j]:
                 if not clustersTree.has_edge(clusterIndex[i], clusterIndex[j]): 
                     subG.remove_edge(i, j)
         return self.stm(subG, seller, Gamma)

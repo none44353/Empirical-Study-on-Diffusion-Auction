@@ -1,6 +1,6 @@
 import networkx as nx
 import unittest
-import mechanismBase
+import mechanism.mechanismBase as mechanismBase
 import itertools
 
 class NSP(mechanismBase.DiffusionAuction):

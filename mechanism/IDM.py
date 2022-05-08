@@ -1,5 +1,5 @@
 import networkx as nx
-import mechanismBase
+import mechanism.mechanismBase as mechanismBase
 import unittest
 
 class IDM(mechanismBase.DiffusionAuction):
@@ -10,6 +10,7 @@ class IDM(mechanismBase.DiffusionAuction):
         # H is the set of reachable vertexes from seller
         dist = nx.single_source_shortest_path_length(G, seller)
         domTree = nx.DiGraph()
+        domTree.add_node(seller)
         for i in H:
             if i != seller: 
                 domTree.add_edge(idom[i], i)
