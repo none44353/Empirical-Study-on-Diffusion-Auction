@@ -7,7 +7,7 @@ class NSP(mechanismBase.DiffusionAuction):
     name = "NSP"
 
     def __call__(self, G, seller):
-        winner, maxBid, secPrice = seller, -1, -1
+        winner, maxBid, secPrice = seller, 0, 0
         bid = G.nodes.data("bid")
         for i in G.neighbors(seller):
             if bid[i] > maxBid:

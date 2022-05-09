@@ -30,9 +30,10 @@ test_mechanisms = {
 }
 
 test_graphs = {
-    'GNP p=0.05 n=30': (GNP(p = 0.1), 30),
+    'GNP p=0.1 n=30': (GNP(p = 0.1), 30),
     'GNP p=0.05 n=100': (GNP(p = 0.05), 100),
-    'GNP p=0.003 n=2000': (GNP(p = 0.01), 2000),
+    'GNP p=0.002 n=500': (GNP(p = 0.002), 500),
+    'GNP p=0.003 n=2000': (GNP(p = 0.001), 2000),
     "Price's m=3 c=1 gamma=1 n=30": (Price_s(m = 3, c = 1, gamma = 1), 30),
     "Price's m=5 c=1 gamma=1 n=30": (Price_s(m = 5, c = 1, gamma = 1), 30),
     "Price's m=6 c=1 gamma=1 n=100": (Price_s(m = 6, c = 1, gamma = 1), 100),
@@ -74,7 +75,7 @@ def test(mechanism: DiffusionAuction,
     nx.set_node_attributes(graph, bids, 'bid')
     return mechanism(graph, seller)
 
-def main():
+def init():
     max_n = 0
     for gname in test_graphs:
         for i in range(TEST_TIMES):
@@ -93,11 +94,14 @@ def main():
         distribution = test_distributions[dname]
         pregenerated_bids[dname] = distribution.rvs(max_n)
 
+def main():
     for gname in test_graphs:
         for mname, mechanism in test_mechanisms.items():
             for dname in test_distributions:
-                eff_ratio = list(map(lambda i: test(mechanism, gname, dname, i).efficiencyRatio, list(range(TEST_TIMES))))
+                results = list(map(lambda i: test(mechanism, gname, dname, i), list(range(TEST_TIMES))))
+                eff_ratio = list(map(lambda x: x.efficiencyRatio, results))
                 print(f'{gname} {mname} {dname}: {np.mean(eff_ratio):.4f}')
 
 if __name__ == '__main__':
+    init()
     main()
