@@ -1,9 +1,14 @@
 from random import randint
 import networkx as nx
-import mechanism.mechanismBase as mechanismBase
-import mechanism.STM as STM
 import unittest
 
+try:
+    import mechanismBase
+    import STM
+except ImportError:
+    import mechanism.mechanismBase as mechanismBase
+    import mechanism.STM as STM
+    
 class SCM(mechanismBase.DiffusionAuction):
     name = "SCM"
     

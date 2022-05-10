@@ -1,7 +1,11 @@
 import networkx as nx
 import unittest
-import mechanism.mechanismBase as mechanismBase
 import itertools
+
+try:
+    import mechanismBase
+except ImportError:
+    import mechanism.mechanismBase as mechanismBase
 
 class NSP(mechanismBase.DiffusionAuction):
     name = "NSP"

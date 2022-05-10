@@ -1,6 +1,10 @@
 import networkx as nx
-import mechanism.mechanismBase as mechanismBase
 import unittest
+
+try:
+    import mechanismBase
+except ImportError:
+    import mechanism.mechanismBase as mechanismBase
 
 class IDM(mechanismBase.DiffusionAuction):
     name = "IDM"

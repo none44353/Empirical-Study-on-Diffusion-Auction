@@ -1,7 +1,12 @@
 import networkx as nx
-import mechanism.mechanismBase as mechanismBase
-import mechanism.IDM as IDM
 import unittest
+
+try:
+    import mechanismBase
+    import IDM
+except ImportError:
+    import mechanism.mechanismBase as mechanismBase
+    import mechanism.IDM as IDM
 
 class STM(mechanismBase.DiffusionAuction):
     name = "STM"
