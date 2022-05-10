@@ -62,8 +62,13 @@ class IDM(mechanismBase.DiffusionAuction):
 
         winner = -1
         monetaryTransfer = dict(zip(G.nodes, [0] * len(G.nodes)))
+
+        if len(diffusionSeq) == 1:
+            winner = diffusionSeq[0]
+            return mechanismBase.DiffusionAuction.MechanismResult(seller, winner, monetaryTransfer, G)
+
         for ix, i in enumerate(diffusionSeq):
-            if (i == mxBidder) or (price[diffusionSeq[ix + 1]] == bid[i]):
+            if ((i == mxBidder) or (price[diffusionSeq[ix + 1]] == bid[i])) and (i != seller):
                 winner = i
                 monetaryTransfer[i] = -price[i]
                 break

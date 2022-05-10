@@ -28,10 +28,14 @@ class DiffusionAuction(ABC):
         
         @property
         def efficiencyRatio(self) -> float:
+            if self.seller == self.winner:
+                return 0
             return self.socialWelfare / getOptimal(self.G, self.seller)
         
         @property
         def normalizedRevenue(self) -> float:
+            if self.seller == self.winner:
+                return 0
             return self.revenue / getOptimal(self.G, self.seller)
     
     @abstractmethod
