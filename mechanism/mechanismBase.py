@@ -1,4 +1,5 @@
 import networkx as nx
+import numpy as np
 from abc import ABC, abstractmethod
 from typing import Any, List, Dict, Tuple
 import abstractcp as acp
@@ -29,6 +30,10 @@ class DiffusionAuction(ABC, acp.Abstract):
         @property
         def efficiencyRatio(self) -> float:
             return self.socialWelfare / getOptimal(self.G, self.seller)
+        
+        @property
+        def normalizedRevenue(self) -> float:
+            return self.revenue / getOptimal(self.G, self.seller)
     
     name: str = acp.abstract_class_property(str)
 
@@ -39,6 +44,10 @@ class DiffusionAuction(ABC, acp.Abstract):
 def getOptimal(G: nx.DiGraph, seller) -> float:
     reachableNodes = nx.descendants(G, seller) | set([seller])
     return max([G.nodes[i]["bid"] for i in reachableNodes])
+
+def getAverageBid(G: nx.DiGraph, seller) -> float:
+    reachableNodes = nx.descendants(G, seller) | set([seller])
+    return np.mean([G.nodes[i]["bid"] for i in reachableNodes])
 
 class TestOptimal(unittest.TestCase):
     def test_getOptimal(self):

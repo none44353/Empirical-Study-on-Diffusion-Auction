@@ -95,11 +95,12 @@ def init():
 
 def main():
     for gname in test_graphs:
-        for mname, mechanism in test_mechanisms.items():
-            for dname in test_distributions:
+        for dname in test_distributions:
+            for mname, mechanism in test_mechanisms.items():
                 results = list(map(lambda i: test(mechanism, gname, dname, i), list(range(TEST_TIMES))))
                 eff_ratio = list(map(lambda x: x.efficiencyRatio, results))
-                print(f'{gname} {mname} {dname}: {np.mean(eff_ratio):.4f}')
+                normalized_revenue = list(map(lambda x: x.normalizedRevenue, results))
+                print(f'{gname} {mname} {dname}, efficiency ratio {np.mean(eff_ratio):.4f}, normalized revenue {np.mean(normalized_revenue):.4f}')
 
 if __name__ == '__main__':
     init()
