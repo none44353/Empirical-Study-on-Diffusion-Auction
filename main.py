@@ -86,7 +86,8 @@ def init():
             pregenerated_graphs[gname].append(graph)
             degree_threshold = graph.number_of_edges() / len(graph.nodes)
             deg = dict(graph.degree())
-            pregenerated_seller[gname].append(random.choice([x for x in graph.nodes if deg[x] >= degree_threshold]))
+            out_deg = dict(graph.out_degree())
+            pregenerated_seller[gname].append(random.choice([x for x in graph.nodes if deg[x] >= degree_threshold and out_deg[x] >= 1]))
     
     for dname in test_distributions:
         print(f'Pregenerating bid {dname}')
