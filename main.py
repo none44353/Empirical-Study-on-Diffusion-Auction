@@ -3,6 +3,7 @@ import scipy.stats as stats
 import random
 from typing import Tuple, Any
 import numpy as np
+from zipfian import ZipfGenerator
 
 from mechanism.mechanismBase import DiffusionAuction
 from mechanism.IDM import IDM
@@ -48,7 +49,7 @@ test_graphs = {
 
 test_distributions = {
     'uniform': stats.uniform(loc=0, scale=1),
-    'powerlaw': stats.zipf(a=1.1),
+    'powerlaw': ZipfGenerator(alpha=1, n=1000),
     'powerlaw2': stats.zipf(a=2),
     'halfnorm': stats.halfnorm(),
 }
@@ -68,7 +69,7 @@ def test(mechanism: DiffusionAuction,
         i: int) -> DiffusionAuction.MechanismResult:
     graph = pregenerated_graphs[gname][i].copy()
     nodes = list(graph.nodes)
-    bids = dict(zip(nodes, pregenerated_bids[dname]))
+    bids = dict(zip(nodes, pregenerated_bids[dname][i]))
     seller = pregenerated_seller[gname][i]
     bids[seller] = 1e-8
     nx.set_node_attributes(graph, bids, 'bid')
@@ -92,7 +93,8 @@ def init():
     for dname in test_distributions:
         print(f'Pregenerating bid {dname}')
         distribution = test_distributions[dname]
-        pregenerated_bids[dname] = distribution.rvs(max_n)
+        for i in range(TEST_TIMES):
+            pregenerated_bids[dname].append(distribution.rvs(max_n))
 
 def main():
     for gname in test_graphs:
