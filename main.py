@@ -4,6 +4,7 @@ import random
 from typing import Tuple, Any
 import numpy as np
 from zipfian import ZipfGenerator
+import sys
 
 from mechanism.mechanismBase import DiffusionAuction
 from mechanism.IDM import IDM
@@ -21,7 +22,7 @@ from multiprocessing import Pool
 # mode = 'FAST'
 mode = 'STANDARD'
 
-TEST_TIMES = 10
+TEST_TIMES = 100
 
 test_mechanisms = {
     'NSP': NSP(),
@@ -31,27 +32,25 @@ test_mechanisms = {
 }
 
 test_graphs = {
-    'GNP p=0.1 n=30': (GNP(p = 0.1), 30),
-    'GNP p=0.05 n=100': (GNP(p = 0.05), 100),
-    'GNP p=0.003 n=2000': (GNP(p = 0.01), 2000),
-    #"Price's m=3 c=1 gamma=1 n=30": (Price_s(m = 3, c = 1, gamma = 1), 30),
-    #"Price's m=5 c=1 gamma=1 n=30": (Price_s(m = 5, c = 1, gamma = 1), 30),
-    #"Price's m=6 c=1 gamma=1 n=100": (Price_s(m = 6, c = 1, gamma = 1), 100),
+    #'GNP p=0.01 n=100': (GNP(p = 0.1), 30),
+    #'GNP p=0.02 n=100': (GNP(p = 0.05), 100),
+    #'GNP p=0.05 n=100': (GNP(p = 0.01), 2000),
+    #"Price's m=3 c=1 gamma=1 n=100": (Price_s(m = 3, c = 1, gamma = 1), 30),
+    #"Price's m=5 c=1 gamma=1 n=100": (Price_s(m = 5, c = 1, gamma = 1), 30),
+    #"Price's m=10 c=1 gamma=1 n=100": (Price_s(m = 6, c = 1, gamma = 1), 100),
     #"Price's m=15 c=1 gamma=1 n=100": (Price_s(m = 15, c = 1, gamma = 1), 100),
-    #"Price's m=12 c=1 gamma=1 n=500": (Price_s(m = 12, c = 1, gamma = 1), 500),
-    #"Price's m=20 c=1 gamma=1 n=500": (Price_s(m = 20, c = 1, gamma = 1), 500),
-    #'Schweimer22 GlobaldevII': (StaticFile('data/static_graph/GlobaldevII.gpickle'), 459),
-    #'Schweimer22 datamining': (StaticFile('data/static_graph/datamining.gpickle'), 2013),
-    #'Schweimer22 Calfire': (StaticFile('data/static_graph/Calfire.gpickle'), 3580),
-    #'Schweimer22 Bioinformatics': (StaticFile('data/static_graph/Bioinformatics.gpickle'), 6003),
-    #'Schweimer22 Vegan': (StaticFile('data/static_graph/Vegan.gpickle'), 11015),
+    'Schweimer22 GlobaldevII': (StaticFile('data/static_graph/GlobaldevII.gpickle'), 459),
+    'Schweimer22 datamining': (StaticFile('data/static_graph/datamining.gpickle'), 2013),
+    'Schweimer22 Calfire': (StaticFile('data/static_graph/Calfire.gpickle'), 3580),
+    'Schweimer22 Bioinformatics': (StaticFile('data/static_graph/Bioinformatics.gpickle'), 6003),
+    'Schweimer22 Vegan': (StaticFile('data/static_graph/Vegan.gpickle'), 11015),
 }
 
 test_distributions = {
     'uniform': stats.uniform(loc=0, scale=1),
     'powerlaw': ZipfGenerator(alpha=1, n=1000),
     'powerlaw2': stats.zipf(a=2),
-    'halfnorm': stats.halfnorm(),
+    'powerlaw3': stats.zipf(a=3),
 }
 
 if mode == 'FAST':
@@ -96,15 +95,27 @@ def init():
         for i in range(TEST_TIMES):
             pregenerated_bids[dname].append(distribution.rvs(max_n))
 
-def main():
+def main(argv):
+    pid = argv[1]
+    print(pid)
+
+    data = []
     for gname in test_graphs:
         for dname in test_distributions:
             for mname, mechanism in test_mechanisms.items():
                 results = list(map(lambda i: test(mechanism, gname, dname, i), list(range(TEST_TIMES))))
                 eff_ratio = list(map(lambda x: x.efficiencyRatio, results))
-                normalized_revenue = list(map(lambda x: x.normalizedRevenue, results))
-                print(f'{gname} {mname} {dname}, efficiency ratio {np.mean(eff_ratio):.4f}, normalized revenue {np.mean(normalized_revenue):.4f}')
+                normalized_revenue = list(map(lambda x: x.normalizedRevenue, results)) 
+                print(f'{gname} {dname} {mname}, efficiency ratio {np.mean(eff_ratio):.4f}, normalized revenue {np.mean(normalized_revenue):.4f}')
+                # store the data
+                data.append(eff_ratio)
+                data.append(normalized_revenue)
+                with open(f'data/labels{pid}','a',encoding="utf-8") as f:
+                    f.write(f'{gname} {dname} {mname} '+"\n")
+    
+    data = np.array(data).reshape(len(test_graphs), len(test_distributions), len(test_mechanisms), -1)
+    data.tofile(f'data/results{pid}')
 
 if __name__ == '__main__':
     init()
-    main()
+    main(sys.argv)
