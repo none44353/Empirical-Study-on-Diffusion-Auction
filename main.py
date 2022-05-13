@@ -1,10 +1,11 @@
+from dataclasses import dataclass
 import networkx as nx
 import scipy.stats as stats
 import random
 from typing import Tuple, Any
 import numpy as np
 from zipfian import ZipfGenerator
-import sys
+import pandas as pd
 
 from mechanism.mechanismBase import DiffusionAuction
 from mechanism.IDM import IDM
@@ -22,7 +23,7 @@ from multiprocessing import Pool
 # mode = 'FAST'
 mode = 'STANDARD'
 
-TEST_TIMES = 100
+TEST_TIMES = 1000
 
 test_mechanisms = {
     'NSP': NSP(),
@@ -39,11 +40,11 @@ test_graphs = {
     "Price's m=5 c=1 gamma=1 n=100": (Price_s(m = 5, c = 1, gamma = 1), 100),
     "Price's m=10 c=1 gamma=1 n=100": (Price_s(m = 10, c = 1, gamma = 1), 100),
     "Price's m=15 c=1 gamma=1 n=100": (Price_s(m = 15, c = 1, gamma = 1), 100),
-    #'Schweimer22 GlobaldevII': (StaticFile('data/static_graph/GlobaldevII.gpickle'), 459),
-    #'Schweimer22 datamining': (StaticFile('data/static_graph/datamining.gpickle'), 2013),
-    #'Schweimer22 Calfire': (StaticFile('data/static_graph/Calfire.gpickle'), 3580),
-    #'Schweimer22 Bioinformatics': (StaticFile('data/static_graph/Bioinformatics.gpickle'), 6003),
-    #'Schweimer22 Vegan': (StaticFile('data/static_graph/Vegan.gpickle'), 11015),
+    'Schweimer22 GlobaldevII': (StaticFile('data/static_graph/GlobaldevII.gpickle'), 459),
+    'Schweimer22 datamining': (StaticFile('data/static_graph/datamining.gpickle'), 2013),
+    'Schweimer22 Calfire': (StaticFile('data/static_graph/Calfire.gpickle'), 3580),
+    'Schweimer22 Bioinformatics': (StaticFile('data/static_graph/Bioinformatics.gpickle'), 6003),
+    'Schweimer22 Vegan': (StaticFile('data/static_graph/Vegan.gpickle'), 11015),
 }
 
 test_distributions = {
@@ -74,6 +75,14 @@ def test(mechanism: DiffusionAuction,
     nx.set_node_attributes(graph, bids, 'bid')
     return mechanism(graph, seller)
 
+data = {
+    "Graph Type": [], 
+    "Bid Type": [], 
+    "Mechanism": [], 
+    "Efficiency Ratio": [], 
+    "Normalized Revenue": []
+}
+
 def init():
     max_n = 0
     for gname in test_graphs:
@@ -95,11 +104,7 @@ def init():
         for i in range(TEST_TIMES):
             pregenerated_bids[dname].append(distribution.rvs(max_n))
 
-def main(argv):
-    pid = argv[1]
-    print(pid)
-
-    data = []
+def main():
     for gname in test_graphs:
         for dname in test_distributions:
             for mname, mechanism in test_mechanisms.items():
@@ -108,14 +113,14 @@ def main(argv):
                 normalized_revenue = list(map(lambda x: x.normalizedRevenue, results)) 
                 print(f'{gname} {dname} {mname}, efficiency ratio {np.mean(eff_ratio):.4f}, normalized revenue {np.mean(normalized_revenue):.4f}')
                 # store the data
-                data.append(eff_ratio)
-                data.append(normalized_revenue)
-                with open(f'data/labels{pid}','a',encoding="utf-8") as f:
-                    f.write(f'{gname} {dname} {mname} '+"\n")
-    
-    data = np.array(data).reshape(len(test_graphs), len(test_distributions), len(test_mechanisms), -1)
-    data.tofile(f'data/results{pid}')
+                data["Graph Type"].append(gname)
+                data["Bid Type"].append(dname)
+                data["Mechanism"].append(mname)
+                data["Efficiency Ratio"].append(np.mean(eff_ratio))
+                data["Normalized Revenue"].append(np.mean(normalized_revenue))
+    dataFrame = pd.DataFrame(data)
+    dataFrame.to_csv('data/result.csv')
 
 if __name__ == '__main__':
     init()
-    main(sys.argv)
+    main()
