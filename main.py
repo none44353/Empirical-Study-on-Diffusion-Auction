@@ -32,18 +32,18 @@ test_mechanisms = {
 }
 
 test_graphs = {
-    #'GNP p=0.01 n=100': (GNP(p = 0.1), 30),
-    #'GNP p=0.02 n=100': (GNP(p = 0.05), 100),
-    #'GNP p=0.05 n=100': (GNP(p = 0.01), 2000),
-    #"Price's m=3 c=1 gamma=1 n=100": (Price_s(m = 3, c = 1, gamma = 1), 30),
-    #"Price's m=5 c=1 gamma=1 n=100": (Price_s(m = 5, c = 1, gamma = 1), 30),
-    #"Price's m=10 c=1 gamma=1 n=100": (Price_s(m = 6, c = 1, gamma = 1), 100),
-    #"Price's m=15 c=1 gamma=1 n=100": (Price_s(m = 15, c = 1, gamma = 1), 100),
-    'Schweimer22 GlobaldevII': (StaticFile('data/static_graph/GlobaldevII.gpickle'), 459),
-    'Schweimer22 datamining': (StaticFile('data/static_graph/datamining.gpickle'), 2013),
-    'Schweimer22 Calfire': (StaticFile('data/static_graph/Calfire.gpickle'), 3580),
-    'Schweimer22 Bioinformatics': (StaticFile('data/static_graph/Bioinformatics.gpickle'), 6003),
-    'Schweimer22 Vegan': (StaticFile('data/static_graph/Vegan.gpickle'), 11015),
+    'GNP p=0.01 n=100': (GNP(p = 0.01), 100),
+    'GNP p=0.02 n=100': (GNP(p = 0.02), 100),
+    'GNP p=0.05 n=100': (GNP(p = 0.05), 100),
+    "Price's m=3 c=1 gamma=1 n=100": (Price_s(m = 3, c = 1, gamma = 1), 100),
+    "Price's m=5 c=1 gamma=1 n=100": (Price_s(m = 5, c = 1, gamma = 1), 100),
+    "Price's m=10 c=1 gamma=1 n=100": (Price_s(m = 10, c = 1, gamma = 1), 100),
+    "Price's m=15 c=1 gamma=1 n=100": (Price_s(m = 15, c = 1, gamma = 1), 100),
+    #'Schweimer22 GlobaldevII': (StaticFile('data/static_graph/GlobaldevII.gpickle'), 459),
+    #'Schweimer22 datamining': (StaticFile('data/static_graph/datamining.gpickle'), 2013),
+    #'Schweimer22 Calfire': (StaticFile('data/static_graph/Calfire.gpickle'), 3580),
+    #'Schweimer22 Bioinformatics': (StaticFile('data/static_graph/Bioinformatics.gpickle'), 6003),
+    #'Schweimer22 Vegan': (StaticFile('data/static_graph/Vegan.gpickle'), 11015),
 }
 
 test_distributions = {
