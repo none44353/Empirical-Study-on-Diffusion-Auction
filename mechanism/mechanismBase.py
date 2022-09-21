@@ -27,6 +27,10 @@ class DiffusionAuction(ABC):
             return self.G.nodes[self.winner]["bid"]
         
         @property
+        def Optimal(self) -> float:
+            return getOptimal(self.G, self.seller)
+        
+        @property
         def efficiencyRatio(self) -> float:
             if self.seller == self.winner:
                 return 0
